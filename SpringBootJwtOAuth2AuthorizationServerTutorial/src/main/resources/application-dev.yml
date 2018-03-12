@@ -1,0 +1,27 @@
+server: 
+  port: 81
+
+spring: 
+  profiles: dev
+#  datasource: 
+#    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/authdb?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&useSSL=false
+#    username: admin
+#    password: password
+#  jpa: 
+#    database: mysql
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#    hibernate: 
+#      ddl-auto: create-drop
+  datasource: 
+    url: jdbc:h2:mem:authdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+  jpa: 
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate: 
+      ddl-auto: create-drop
+
+logging: 
+  path: /var/log/logback

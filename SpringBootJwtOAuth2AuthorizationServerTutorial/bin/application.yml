@@ -1,0 +1,87 @@
+server: 
+  context-path: /
+  session:
+    cookie:
+      name: OAUTH2SESSION
+  error:
+    whitelabel:
+      enabled: false
+
+spring: 
+  profiles: 
+    active: loc
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari: 
+      connection-timeout: 30000
+      idle-timeout: 600000
+      minimum-idle: 2
+      maximum-pool-size: 30
+      pool-name: HikariPool
+      connection-test-query: SELECT 1
+      data-source-properties: 
+        cache-prep-stmts: true
+        prep-stmt-cache-size: 256
+        prep-stmt-cache-sql-limit: 2048
+        use-server-prep-stmts: true
+  jpa: 
+    show-sql: true
+    properties: 
+      hibernate: 
+        use_sql_comments: true
+        format_sql: true
+
+security: 
+  auth: 
+    query: 
+      users-by-username: SELECT username, password, enabled FROM user WHERE username = ?
+      authorities-by-username: SELECT user.username, role.name FROM user LEFT JOIN role ON role.user_seq = user.seq WHERE user.username = ?
+  oauth2: 
+    #####################################################################################################
+    ####                                                                                              ###
+    #### $ keytool -genkey -keyalg RSA -alias <key-pair> -keystore <jks>.jks -storepass <storepass>   ###
+    ####                                                                                              ###
+    #####################################################################################################
+    ####                                                                                              ###
+    #### $ keytool -genkey -keyalg RSA -alias authpair -keystore authkeystore.jks -storepass password ###
+    ####                                                                                              ###
+    #####################################################################################################
+    ####                                                                                              ###
+    #### 이름과 성을 입력하십시오.                                                                    ###
+    ####   [Unknown]:  warumono                                                                       ###
+    #### 조직 단위 이름을 입력하십시오.                                                               ###
+    ####   [Unknown]:  develop                                                                        ###
+    #### 조직 이름을 입력하십시오.                                                                    ###
+    ####   [Unknown]:  storm                                                                          ###
+    #### 구/군/시 이름을 입력하십시오?                                                                ###
+    ####   [Unknown]:                                                                                 ###
+    #### 시/도 이름을 입력하십시오.                                                                   ###
+    ####   [Unknown]:  Seoul                                                                          ###
+    #### 이 조직의 두 자리 국가 코드를 입력하십시오.                                                  ###
+    ####   [KR]:  Unknown                                                                             ###
+    #### CN=warumono, OU=develop, O=storm, L=Unknown, ST=Seoul, C=KR이(가) 맞습니까?                  ###
+    ####   [아니오]:  예                                                                              ###
+    ####                                                                                              ###
+    #### <authpair>에 대한 키 비밀번호를 입력하십시오.                                                ###
+    ####   (키 저장소 비밀번호와 동일한 경우 Enter 키를 누름):                                        ###
+    ####                                                                                              ###
+    #####################################################################################################
+    keystore: 
+      jks: authkeystore.jks
+      storepass: password
+      key-pair: authpair
+    authorization: 
+      token-key-access: isAuthenticated()
+    client: 
+      id: your-client-id
+      access-token-validity-seconds: 86400
+      refresh-token-validity-seconds: 86400
+      token-name: access-token
+      scope: read, write, trust
+    resource: 
+      id: your-resource-id
+      filter-order: 3
+
+logging:
+  config: classpath:logback-spring.xml
+  file: auth
